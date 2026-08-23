@@ -1,40 +1,63 @@
+<div align="center">
+
+**English** • [Русский](README.md)
+
+</div>
+
 # klipper-dwin-bridge
 
-Klipper ↔ Creality DWIN touchscreen bridge for the **Ender 5 S1** running on a **Raspberry Pi Zero 2 W**.
+<p align="center">
+  <a href="https://github.com/Mukller">
+    <img src="https://img.shields.io/badge/Anton%20Petnitsky-Developer-0d1117?style=for-the-badge&logo=github&logoColor=white&labelColor=0d1117&color=58a6ff" alt="Anton Petnitsky" />
+  </a>
+</p>
 
-Keeps the stock DWIN screen fully working with Klipper/Moonraker and adds **Marlin-style live tuning screens** (Motion: steps/mm, acceleration, speed, jerk; PID; Bed Mesh visualizer; filament profiles) — "control the printer from the panel".
+Мост между Klipper и тачскрином Creality DWIN для **Ender 5 S1** на **Raspberry Pi Zero 2 W**.
+
+Штатный экран DWIN полностью продолжает работать с Klipper/Moonraker, а вдобавок появляются
+**экраны живой настройки в стиле Marlin** (Motion: steps/mm, ускорения, скорость, jerk; PID;
+визуализатор сетки стола; профили филамента) — «управляй принтером с панели».
 
 ![status](https://img.shields.io/badge/status-alpha-orange) ![platform](https://img.shields.io/badge/hardware-Pi%20Zero%202W%20%2B%20DWIN%20T5UID1-blue)
 
-## How it works
+## Как это работает
 
-- A Python daemon (`klipper_dwin_bridge.py`) talks to the stock DWIN screen over GPIO UART (`/dev/serial0`, physical pins 8/10 = GPIO14/15) and pulls state / pushes variables through the local Moonraker API.
-- The screen keeps its stock Creality firmware pages (Home/Print/Prepare/Settings) — no DWIN_SET reflash needed.
-- Marlin-style live tuning is implemented as extra VP-variable screens; values map to Klipper equivalents (`rotation_distance` instead of M92, `max_velocity`/`max_accel`, `square_corner_velocity` instead of Jerk, etc.).
-- Runs as a systemd unit `klipper-dwin.service` (`python3 -u ...` so logs stream to `journalctl -u klipper-dwin.service -f`).
+- Python-демон (`klipper_dwin_bridge.py`) общается со штатным экраном DWIN через GPIO UART
+  (`/dev/serial0`, физические пины 8/10 = GPIO14/15) и забирает состояние / пушит переменные
+  через локальный Moonraker API.
+- Экран сохраняет штатные страницы прошивки Creality (Home/Print/Prepare/Settings) — перепрошивка
+  DWIN_SET не нужна.
+- Живая настройка в стиле Marlin реализована как дополнительные экраны VP-переменных; значения
+  отображаются на эквиваленты Klipper (`rotation_distance` вместо M92, `max_velocity`/`max_accel`,
+  `square_corner_velocity` вместо Jerk и т.д.).
+- Запускается как systemd-юнит `klipper-dwin.service` (`python3 -u ...`, чтобы логи шли в
+  `journalctl -u klipper-dwin.service -f`).
 
-## Wiring (Pi Zero 2 W header)
+## Подключение (распиновка Pi Zero 2 W)
 
-| Screen | Pi pin | Note |
+| Экран | Пин Pi | Примечание |
 |---|---|---|
 | VCC | pin 2 (5V) | |
 | GND | pin 6 | |
 | Screen TX | pin 10 (GPIO15, RXD) | |
 | Screen RX | pin 8 (GPIO14, TXD) | |
 
-Bluetooth must be disabled on the Pi Zero 2 W — BT occupies the primary UART; `/dev/serial0` has to resolve to it.
+Bluetooth на Pi Zero 2 W нужно отключить — BT занимает основной UART; `/dev/serial0` должен
+резолвиться именно в него.
 
-## Status
+## Статус
 
-- ✅ Screen boots and stays connected across reboots (`NRestarts=0`), verified in production on 2026-08-21.
-- ✅ Live tuning screens (Motion/PID/Bed Mesh/filament profiles) implemented and confirmed working.
-- ⚠️ This repo currently ships documentation only. The patched `klipper_dwin_bridge.py` runs on the printer's offline Pi; a code snapshot will be pushed once the printer's network segment is reachable again.
-- Based on the alpha [FoxCraft67/Klipper-Creality-DWIN-Touchscreen-Bridge](https://github.com/FoxCraft67/Klipper-Creality-DWIN-Touchscreen-Bridge) concept (upstream archived/unmaintained), extended heavily for Ender 5 S1 + live tuning.
+- ✅ Экран грузится и остаётся подключённым между перезагрузками (`NRestarts=0`), проверено в бою 21.08.2026.
+- ✅ Экраны живой настройки (Motion/PID/Bed Mesh/профили филамента) реализованы и подтверждены.
+- ⚠️ Сейчас в репозитории только документация: патченный `klipper_dwin_bridge.py` работает на офлайн-Pi
+  принтера; снапшот кода будет запушен, когда сетевой сегмент принтера снова станет доступен.
+- Основано на альфа-концепте [FoxCraft67/Klipper-Creality-DWIN-Touchscreen-Bridge](https://github.com/FoxCraft67/Klipper-Creality-DWIN-Touchscreen-Bridge)
+  (апстрим заархивирован/не поддерживается), сильно расширено под Ender 5 S1 + живую настройку.
 
-## Author
+## Автор
 
 **Anton Petnitsky** — [github.com/Mukller](https://github.com/Mukller) · [antonpetnitsky.com](https://antonpetnitsky.com)
 
-## License
+## Лицензия
 
 MIT
